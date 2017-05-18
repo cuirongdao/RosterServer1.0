@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application name="app.orm.RosterServer">
+	<failover>MultiInstances</failover>
+	  <configurations>
+		<serviceConfigurations>
+			<section name="general" desc="General Settings">
+				<property name="port" type="Integer" default="9090"/>
+				<property name="protocol" type="Select" default="http-rest">
+					<option desc="http/rest" value="http-rest"/>
+				</property>
+				<property name="outBoundUrl" type="String" default="" />
+			</section> 
+			
+			<section name="dbserver" desc="Database Settings">
+				<property name="type" type="Select" default="MYSQL">
+					<option value="MYSQL"/>
+				</property>
+				<property name="driverClassName" type="string" subType="long-string"/>
+				<property name="url" type="String" subType="long-string"/>
+				<property name="username" type="String"/>
+				<property name="password" type="Password"/>
+				<property name="validationSql" type="String" default="select 1"/>
+				<property name="showSql" type="Boolean" default="false"/>
+	  		</section>
+		</serviceConfigurations>
+	</configurations>
+
+	
+	<monitors>
+		
+	</monitors>	
+
+
+</application>

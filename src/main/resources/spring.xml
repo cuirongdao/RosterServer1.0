@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	default-lazy-init="true">
+
+	<bean
+		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+	<bean id="XmlPlaceholderConfigurer2" class="component.spring.XmlPlaceholderConfigurer"
+		lazy-init="false" depends-on="init_BeanFactory">
+		<property name="preference" ref="component.service.PreferenceSource" />
+	</bean>
+
+	<bean id="component.service.impl.Configurer" class="component.service.impl.Configurer">
+		<property name="destObjects">
+			<list>
+				<ref bean="ActivityMgr" />
+			</list>
+		</property>
+		<property name="source" ref="component.service.PreferenceSource" />
+	</bean>
+
+
+
+
+
+	<!-- Application Configuration -->
+	<alias name="app.orm.rosterServer.RosterServer" alias="service" />
+	<bean id="app.orm.rosterServer.RosterServer" class="app.orm.rosterServer.RosterServer">
+		<property name="protocolMgr" ref="protocol-http" />
+
+	</bean>
+	<bean id="ActivityMgr" class="app.orm.rosterServer.ActivityMgr"
+		init-method="init">
+
+	</bean>
+	<bean id="PolicyMgr" class="app.orm.rosterServer.PolicyMgr"
+		init-method="init">
+
+	</bean>
+
+	<bean id="RosterMgr" class="app.orm.rosterServer.RosterMgr"
+		init-method="init">
+
+	</bean>
+
+	<!-- wangjun -->
+	<bean id="DNCRosterMgr" class="app.orm.rosterServer.DNCRosterMgr"
+		init-method="init">
+	</bean>
+
+	<bean id="OutBoundProxy" class="app.orm.rosterServer.outReach.OutBoundProxy">
+		<property name="outBoundUrl" value="${general.outBoundUrl}" />
+	</bean>
+
+	<bean id="protocol-http" class="app.orm.rosterServer.connector.HttpProtocolMgr"
+		init-method="init">
+		<property name="port" value="${general.port}" />
+		<property name="processor" ref="httpProcessor" />
+		<property name="server" ref="httpServer" />
+	</bean>
+	<bean id="httpProcessor" class="app.orm.rosterServer.connector.HttpRequestProcessor">
+	</bean>
+	<bean id="httpServer" class="app.orm.rosterServer.connector.HttpServer">
+	</bean>
+	<bean id="JobMgr" class="app.orm.rosterServer.JobMgr">
+	</bean>
+
+
+	<!-- Spring-Mybatis配置 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" /> <property 
+		name="url" value="jdbc:mysql://172.16.0.176:3306/roster?characterEncoding=utf-8" 
+		/> <property name="username" value="root" /> <property name="password" value="root01" 
+		/> </bean> -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${dbserver.driverClassName}" />
+		<property name="url" value="${dbserver.url}" />
+		<property name="username" value="${dbserver.username}" />
+		<property name="password" value="${dbserver.password}" />
+		<property name="maxActive" value="20" />
+		<property name="maxIdle" value="3" />
+		<property name="maxWait" value="12000" />
+	<!--	 maxActive：最大连接数据库连接数，设置为0时，表示没有限制； 
+			 maxIdle：最大等待连接中的数量，设置为0时，表示没有限制； 
+			 maxWait：最大等待秒数，单位为毫秒， 超过时间会报出错误信息； -->
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath:RosterInfoMapper.xml" />
+	</bean>
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="dbProxy" class="app.orm.rosterServer.mybatis.DBProxy"
+		init-method="init">
+		<!-- <property name="sqlSessionFactory" ref="sqlSessionFactory" /> -->
+		<property name="sqlSession" ref="sqlSession" />
+	</bean>
+
+</beans>

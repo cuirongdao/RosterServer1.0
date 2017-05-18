@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app.orm.rosterServer.mybatis.RosterInfoMapper">
+	<!-- id：用来配合namespace来定位这个操作，也就是在调用时，将采用cn.kolbe.mybatis.StudentMapper.getStudent -->
+	<!-- resultType：表示返回值类型，必须是全类名，MyBatis将自动为我们将查询结果封装成指定对象 -->
+	<!-- parameterType：表示传进来的参数的类型，因为传的是id主键，所以是int型 -->
+	
+	<!-- 查询表是否存在 -->
+	<select id="selectTableSql" parameterType="map" resultType="Integer"> 
+		${sql} 
+	</select>
+	<!-- 查询表中一条数据 -->
+	<select id="selectByNameSql" parameterType="map" resultType="java.util.Map">  
+        ${sql} 
+	</select> 
+	<!-- 查询表中所有数据 -->
+	<select id="selectAllSql" parameterType="map" resultType="java.util.Map">  
+        ${sql} 
+	</select> 
+	<!-- 查询表中所有字段 -->
+	<select id="selectTableColumnsSql" parameterType="map" resultType="java.lang.String">  
+        ${sql} 
+	</select> 
+	<!-- 创建表 -->
+	<update id="createTableSql" parameterType="map"> 
+		${sql} 
+	</update>
+	<!-- 删除表 -->
+	<update id="deleteTableSql" parameterType="map"> 
+		${sql} 
+	</update>
+	<!-- 删除表中数据 -->
+	<delete id="deleteFromTableSql" parameterType="map"> 
+		${sql} 
+	</delete>
+	<!-- 插入数据-导入名单 -->
+	<insert id="insertSql" parameterType="map"> 
+		${sql} 
+	</insert>
+	
+</mapper>
